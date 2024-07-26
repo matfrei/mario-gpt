@@ -49,13 +49,16 @@ class Simulator:
         save_level(self.level, t.name)
         print(f"Running Astar agent on level! -- {t.name}")
         render_str = "human" if render else "norender"
-        _ = subprocess.run(
-            ["java", "-jar", self.astar_jar_path, t.name, render_str, IMAGE_PATH],
+        p = subprocess.run(
+            ["java", "-jar", self.astar_jar_path, t.name, IMAGE_PATH],
             stdout=subprocess.PIPE,
         )
         t.close()
         os.unlink(t.name)
-
+        out = [line.decode("UTF-8")[:-1] for line in p.stdout.readlines()]
+        return out
+        
+        
     def __call__(self, simulate_mode: str = "interactive", render: bool = True):
         if simulate_mode == "interactive":
             self.interactive()

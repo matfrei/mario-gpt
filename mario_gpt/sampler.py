@@ -20,6 +20,7 @@ from mario_gpt.utils import (
     view_level,
 )
 
+from mido import MidiFile, MidiTrack, Message
 
 @dataclass
 class SampleOutput:
@@ -119,8 +120,38 @@ class SampleOutput:
     def run_astar(self, render=True):
         simulator = Simulator(level=self.level)
         simulator.astar(render)
+        
+    def generate_midi(self, render=True):
+        simulator = Simulator(level=self.level)
+        out = simulator.astar(render)        
+        out = out[7:]
+        coords = [
+        (float(line.split(" , ")[0]), float(line.split(" , ")[1]))
+        for line in out]
+        coords = [
+        (int(floor(x / tilesize)), int(floor(y / tilesize))) for (x, y) in coords_raw]
 
+        mid = MidiFile()
+        track = MidiTrack()
+        mid.tracks.append(track)
 
+        # Set the tempo (in microseconds per beat)
+        tempo = mido.bpm2tempo(120)  # 120 BPM
+
+        # Add a tempo change to the track
+        track.append(mido.MetaMessage('set_tempo', tempo=tempo))
+        #TODO: this is not used for now as I left it out by accident, but it sounds cooler that way :-)
+        scale = list(range(min_note, max_note, increment))
+        
+        for coord in coords:
+            track.append(Message('note_on', note=coord[1], velocity=64, time=duration))
+            # TODO: the zero is a bug here, but again, sounds cool that way :-)
+            track.append(Message('note_off', note=coord[0]%13, velocity=64, time=duration))
+        t = tempfile.NamedTemporaryFile(suffix=".mid", delete=False)
+        mid.save(t.name)
+        return t.name
+        
+        
 class GPTSampler:
     def __init__(
         self,
