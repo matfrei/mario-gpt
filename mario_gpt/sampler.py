@@ -129,7 +129,7 @@ class SampleOutput:
         (float(line.split(" , ")[0]), float(line.split(" , ")[1]))
         for line in out]
         coords = [
-        (int(floor(x / tilesize)), int(floor(y / tilesize))) for (x, y) in coords_raw]
+        (int(floor(x / tilesize)), int(floor(y / tilesize))) for (x, y) in coords]
 
         mid = MidiFile()
         track = MidiTrack()
