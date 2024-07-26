@@ -36,6 +36,9 @@ setup(
         'scipy',
         'tqdm',
         'pillow',
+        'mido',
+        'python-rtmidi',
+        'pydub',
     ],
 
     classifiers=[
