@@ -49,7 +49,7 @@ class Simulator:
         save_level(self.level, t.name)
         print(f"Running Astar agent on level! -- {t.name}")
         render_str = "human" if render else "norender"
-        p = subprocess.run(
+        p = subprocess.Popen(
             ["java", "-jar", self.astar_jar_path, t.name, IMAGE_PATH],
             stdout=subprocess.PIPE,
         )
