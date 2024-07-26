@@ -48,14 +48,16 @@ class Simulator:
         t = tempfile.NamedTemporaryFile(suffix=".txt", delete=False)
         save_level(self.level, t.name)
         print(f"Running Astar agent on level! -- {t.name}")
+        print(IMAGE_PATH)
         render_str = "human" if render else "norender"
         p = subprocess.Popen(
             ["java", "-jar", self.astar_jar_path, t.name, IMAGE_PATH],
             stdout=subprocess.PIPE,
         )
-        t.close()
-        os.unlink(t.name)
+        
         out = [line.decode("UTF-8")[:-1] for line in p.stdout.readlines()]
+        os.unlink(t.name)
+        t.close()
         return out
         
         
