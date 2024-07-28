@@ -134,7 +134,7 @@ class SampleOutput:
         note = int(y/y_max * (max_note - min_note))
         return note, velocity, duration
 
-    def generate_midi(self, tempo_bpm=180, coord2midi_callback=coordinate_to_midi_y, render=True):
+    def generate_midi(self, filepath, tempo_bpm=180, coord2midi_callback=coordinate_to_midi_y, render=True):
         simulator = Simulator(level=self.level)
         out = simulator.astar(render)        
         out = out[7:]
@@ -157,6 +157,7 @@ class SampleOutput:
             note, velocity, duration = coord2midi_callback(x,y)
             track.append(Message('note_on', note=note, velocity=velocity, time=duration))
             #track.append(Message('note_off', note=coord[0]%13, velocity=64, time=duration))
+        mid.save(filepath)
         return mid
 
 class GPTSampler:
